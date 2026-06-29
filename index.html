@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyecto de Indagación - Santa Lucía 2026</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: { DEFAULT: '#2F3E30', light: '#3d5240', dark: '#1a241b', muted: '#2F3E3030' },
+        accent: { DEFAULT: '#8A9A8B', light: '#a8b5a9', dark: '#6b7a6c' },
+        cream: '#F7F5F0',
+        amber: '#caa24c',
+      },
+      fontFamily: {
+        serif: ['Playfair Display', 'serif'],
+        sans: ['Inter', 'sans-serif'],
+      }
+    }
+  }
+}
+</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { overflow: hidden; height: 100%; background: #1a241b; }
+  
+  .slide { 
+    position: absolute; inset: 0; 
+    opacity: 0; visibility: hidden; 
+    transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+    transform: scale(0.97) translateY(10px);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .slide.active { 
+    opacity: 1; visibility: visible; 
+    transform: scale(1) translateY(0);
+  }
+  .slide.exit-left {
+    opacity: 0; visibility: hidden;
+    transform: scale(0.97) translateX(-40px);
+  }
+  .slide.exit-right {
+    opacity: 0; visibility: hidden;
+    transform: scale(0.97) translateX(40px);
+  }
+
+  .slide-content {
+    animation: fadeUp 0.8s cubic-bezier(0.2,0.8,0.2,1) 0.3s both;
+  }
+  .slide.active .slide-content { animation-play-state: running; }
+  .slide:not(.active) .slide-content { animation: none; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes slideRight {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .anim-1 { animation-delay: 0.4s; }
+  .anim-2 { animation-delay: 0.55s; }
+  .anim-3 { animation-delay: 0.7s; }
+  .anim-4 { animation-delay: 0.85s; }
+  .anim-5 { animation-delay: 1.0s; }
+  .anim-6 { animation-delay: 1.15s; }
+
+  .progress-bar {
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .nav-btn {
+    transition: all 0.3s ease;
+    backdrop-filter: blur(12px);
+  }
+  .nav-btn:hover {
+    background: rgba(255,255,255,0.2);
+    transform: scale(1.1);
+  }
+  .nav-btn:active { transform: scale(0.95); }
+
+  .card-hover {
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+
+  .img-mask {
+    -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  }
+
+  .slide-number {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bullet-item {
+    animation: slideRight 0.6s cubic-bezier(0.2,0.8,0.2,1) both;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .divider-vertical {
+    width: 3px;
+    border-radius: 3px;
+  }
+
+  /* Scrollbar for overflow content */
+  .slide-scroll::-webkit-scrollbar { width: 4px; }
+  .slide-scroll::-webkit-scrollbar-track { background: transparent; }
+  .slide-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+  @media (max-width: 768px) {
+    .slide-grid-2 { grid-template-columns: 1fr !important; }
+    .slide-grid-3 { grid-template-columns: 1fr !important; }
+    .slide-text-size { font-size: 0.85rem !important; }
+    .slide-title-size { font-size: 1.5rem !important; }
+  }
+</style>
+</head>
+<body class="font-sans text-white select-none">
+
+<!-- Background texture -->
+<div class="fixed inset-0 z-0 pointer-events-none">
+  <div class="absolute inset-0" style="background: radial-gradient(ellipse at 30% 20%, rgba(47,62,48,0.4) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, rgba(138,154,139,0.15) 0%, transparent 50%);"></div>
+  <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;1&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+</div>
+
+<!-- Progress Bar -->
+<div class="fixed top-0 left-0 right-0 z-50 h-1 bg-white/10">
+  <div id="progressBar" class="progress-bar h-full bg-gradient-to-r from-accent-light to-amber/80 rounded-r-full" style="width: 8.33%"></div>
+</div>
+
+<!-- Slide Counter -->
+<div class="fixed top-5 right-6 z-50 slide-number text-xs font-medium text-white/40 tracking-wider">
+  <span id="currentSlide">01</span> / <span id="totalSlides">12</span>
+</div>
+
+<!-- Navigation Buttons -->
+<button id="prevBtn" onclick="changeSlide(-1)" class="nav-btn fixed left-4 top-1/2 -translate-y-1/2 z-50 w-10 h-10 rounded-full bg-white/10 text-white/60 flex items-center justify-center">
+  <span class="iconify" data-icon="lucide:chevron-left" data-width="20"></span>
+</button>
+<button id="nextBtn" onclick="changeSlide(1)" class="nav-btn fixed right-4 top-1/2 -translate-y-1/2 z-50 w-10 h-10 rounded-full bg-white/10 text-white/60 flex items-center justify-center">
+  <span class="iconify" data-icon="lucide:chevron-right" data-width="20"></span>
+</button>
+
+<!-- Slide Thumbnails -->
+<div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex gap-1.5 px-4 py-2 rounded-full bg-black/30 backdrop-blur-md border border-white/10">
+  <template id="thumbTemplate">
+    <button class="thumb-btn w-2 h-2 rounded-full bg-white/20 transition-all duration-300 hover:bg-white/50" onclick="goToSlide(INDEX)"></button>
+  </template>
+</div>
+
+<!-- ==================== SLIDE 1: PORTADA ==================== -->
+<div class="slide active" data-slide="0">
+  <div class="absolute inset-0">
+    <img src="https://z-cdn-media.chatglm.cn/files/a48f1e8d-3f10-4950-b590-b6e85aa8a6a3.jpg?auth_key=1882484908-91d2e7c1335047958ebfac95dde34bc5-0-ebf6c64d1bd1f17ba67e0ab37b4e1cf7" class="w-full h-full object-cover" alt="">
+    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/70 to-brand-dark/30"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-brand-dark/60 to-transparent"></div>
+  </div>
+  <div class="slide-content relative z-10 max-w-4xl mx-auto px-8 md:px-16 text-center">
+    <div class="anim-1 bullet-item">
+      <span class="tag bg-amber/20 text-amber border border-amber/30 mb-6">
+        <span class="iconify" data-icon="lucide:leaf" data-width="12"></span>
+        FENCYT 2026
+      </span>
+    </div>
+    <h1 class="anim-2 bullet-item font-serif text-3xl md:text-5xl lg:text-6xl font-500 leading-tight tracking-tight mb-6" style="line-height: 1.15;">
+      Conocemos y Valoramos los<br>
+      <span class="text-accent-light">Atractivos Turísticos</span><br>
+      de Santa Lucía
+    </h1>
+    <p class="anim-3 bullet-item text-white/60 text-sm md:text-base font-light max-w-2xl mx-auto mb-8 leading-relaxed">
+      Para promover su conservación ambiental
+    </p>
+    <div class="anim-4 bullet-item flex flex-wrap items-center justify-center gap-3 text-xs text-white/40 mb-10">
+      <span class="flex items-center gap-1.5"><span class="iconify" data-icon="lucide:school" data-width="14"></span> I.E. N° 0599 "Micaela Seminario de Romero"</span>
+      <span class="hidden md:inline text-white/20">•</span>
+      <span class="flex items-center gap-1.5"><span class="iconify" data-icon="lucide:map-pin" data-width="14"></span> Santa Lucía, Tocache – San Martín</span>
+      <span class="hidden md:inline text-white/20">•</span>
+      <span class="flex items-center gap-1.5"><span class="iconify" data-icon="lucide:book-open" data-width="14"></span> 2° Grado "A" – Personal Social</span>
+    </div>
+    <div class="anim-5 bullet-item">
+      <div class="inline-flex items-center gap-4 px-6 py-3 rounded-xl bg-white/5 border border-white/10">
+        <div class="flex -space-x-2">
+          <div class="w-8 h-8 rounded-full bg-accent/40 border-2 border-brand-dark flex items-center justify-center text-xs font-semibold">LG</div>
+          <div class="w-8 h-8 rounded-full bg-amber/40 border-2 border-brand-dark flex items-center justify-center text-xs font-semibold">SQ</div>
+          <div class="w-8 h-8 rounded-full bg-accent-light/40 border-2 border-brand-dark flex items-center justify-center text-xs font-semibold">AH</div>
+        </div>
+        <div class="text-left">
+          <p class="text-xs font-medium text-white/80">Lachira Gonzales Gareth, Salas Quispe Kajol, Arias Hidalgo Benjamin.</p>
+          <p class="text-[10px] text-white/40">Asesora: Prof. Neri Cotrina Ubaldo</p>
+        </div>
+      </div>
+    </div>
+    <p class="anim-6 bullet-item mt-8 text-[10px] text-white/20 tracking-widest uppercase">Presiona → para avanzar</p>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 2: PLANTEAMIENTO DEL PROBLEMA ==================== -->
+<div class="slide" data-slide="1">
+  <div class="slide-content w-full h-full flex flex-col md:flex-row">
+    <!-- Image side -->
+    <div class="hidden md:block md:w-[45%] relative">
+      <img src="https://z-cdn-media.chatglm.cn/files/7277df94-097b-4566-b2c3-d2f25ee1bb90.jpg?auth_key=1882484908-3816c3c45a2a465a8aec6f304d33d3b8-0-d44e85690e2f4dcdcd6c012f397d5ca9" class="w-full h-full object-cover" alt="">
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent to-brand-dark"></div>
+      <div class="absolute inset-0 bg-brand-dark/20"></div>
+    </div>
+    <!-- Content side -->
+    <div class="flex-1 flex flex-col justify-center px-8 md:px-14 py-12 md:py-0 slide-scroll overflow-y-auto">
+      <div class="anim-1 bullet-item mb-2">
+        <span class="tag bg-red-500/15 text-red-300 border border-red-500/20">
+          <span class="iconify" data-icon="lucide:alert-triangle" data-width="11"></span>
+          Diagnóstico
+        </span>
+      </div>
+      <h2 class="anim-2 bullet-item font-serif text-2xl md:text-4xl font-500 mb-6 tracking-tight slide-title-size">
+        Planteamiento del Problema
+      </h2>
+      <div class="anim-3 bullet-item space-y-4 text-white/70 text-sm md:text-base font-light leading-relaxed slide-text-size">
+        <p>En el distrito de <strong class="text-white font-medium">Santa Lucía</strong> existen diversos atractivos naturales, culturales y recreativos que forman parte de la identidad local.</p>
+        <p>Sin embargo, durante las visitas realizadas se observó:</p>
+      </div>
+      <div class="anim-4 bullet-item grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+        <div class="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/5">
+          <span class="iconify text-red-400 mt-0.5 flex-shrink-0" data-icon="lucide:trash-2" data-width="18"></span>
+          <span class="text-xs text-white/60 leading-relaxed">Presencia de <strong class="text-white/80">residuos sólidos</strong> en espacios naturales</span>
+		  <img src="img/basura.jpg" alt="Descripción de la imagen" width="200" height="200">
+        </div>
+        <div class="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/5">
+          <span class="iconify text-amber-400 mt-0.5 flex-shrink-0" data-icon="lucide:sign-post" data-width="18"></span>
+          <span class="text-xs text-white/60 leading-relaxed"><strong class="text-white/80">Escasa señalización</strong> turística</span>
+		  <img src="img/nobasura.jpg" alt="Descripción de la imagen" width="200" height="200">
+        </div>
+        <div class="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/5">
+          <span class="iconify text-orange-400 mt-0.5 flex-shrink-0" data-icon="lucide:tree-pine" data-width="18"></span>
+          <span class="text-xs text-white/60 leading-relaxed"><strong class="text-white/80">Deterioro</strong> de áreas verdes</span>
+		  <img src="img/deterioro.jpg" alt="Descripción de la imagen" width="200" height="200">
+        </div>
+        <div class="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/5">
+          <span class="iconify text-purple-400 mt-0.5 flex-shrink-0" data-icon="lucide:book-x" data-width="18"></span>
+          <span class="text-xs text-white/60 leading-relaxed"><strong class="text-white/80">Poco conocimiento</strong> escolar sobre su importancia</span>
+		  <img src="img/pensando.png" alt="Descripción de la imagen" width="200" height="200">
+        </div>
+      </div>
+      <div class="anim-5 bullet-item mt-6 p-4 rounded-xl bg-amber/10 border border-amber/20">
+        <p class="text-xs text-amber/90 leading-relaxed">
+          <span class="iconify inline-block mr-1 align-text-bottom" data-icon="lucide:info" data-width="14"></span>
+          Esta situación podría <strong>afectar la conservación y valoración</strong> de estos espacios por parte de la comunidad.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 3: PREGUNTA DE INDAGACIÓN ==================== -->
+<div class="slide" data-slide="2">
+  <div class="absolute inset-0">
+    <img src="https://z-cdn-media.chatglm.cn/files/bad10537-51b3-4339-985b-c1bfc3db8496.jpg?auth_key=1882484908-692cff22eae84718a72462000b5cfe01-0-1fe7d7584de0bf8d024667c76faa172e" class="w-full h-full object-cover" alt="">
+    <div class="absolute inset-0 bg-brand-dark/85"></div>
+    <div class="absolute inset-0" style="background: radial-gradient(ellipse at center, rgba(47,62,48,0.3) 0%, transparent 70%);"></div>
+  </div>
+  <div class="slide-content relative z-10 max-w-3xl mx-auto px-8 text-center">
+    <div class="anim-1 bullet-item mb-6">
+      <span class="tag bg-blue-500/15 text-blue-300 border border-blue-500/20">
+        <span class="iconify" data-icon="lucide:help-circle" data-width="11"></span>
+        Pregunta de Indagación
+      </span>
+    </div>
+    <div class="anim-2 bullet-item mb-8">
+      <div class="inline-block">
+        <span class="iconify text-accent/40" data-icon="lucide:quote" data-width="48"></span>
+      </div>
+    </div>
+    <h2 class="anim-3 bullet-item font-serif text-xl md:text-3xl lg:text-4xl font-500 leading-snug tracking-tight mb-10 slide-title-size" style="line-height:1.35;">
+      ¿Cómo influye el <span class="text-amber underline decoration-amber/40 underline-offset-4">conocimiento</span> de los atractivos turísticos de Santa Lucía en las <span class="text-accent-light underline decoration-accent-light/40 underline-offset-4">acciones de conservación ambiental</span> que realizan los estudiantes del segundo grado de primaria de la I.E. N.° 0599?
+    </h2>
+    <div class="anim-4 bullet-item flex flex-wrap items-center justify-center gap-6 mt-8">
+      <div class="flex items-center gap-2 text-xs text-white/40">
+        <div class="w-8 h-8 rounded-lg bg-amber/15 flex items-center justify-center">
+          <span class="iconify text-amber" data-icon="lucide:brain" data-width="16"></span>
+        </div>
+        <span>Conocimiento</span>
+      </div>
+      <span class="iconify text-white/20" data-icon="lucide:arrow-right" data-width="16"></span>
+      <div class="flex items-center gap-2 text-xs text-white/40">
+        <div class="w-8 h-8 rounded-lg bg-accent/15 flex items-center justify-center">
+          <span class="iconify text-accent-light" data-icon="lucide:hand-heart" data-width="16"></span>
+        </div>
+        <span>Conservación</span>
+      </div>
+      <span class="iconify text-white/20" data-icon="lucide:arrow-right" data-width="16"></span>
+      <div class="flex items-center gap-2 text-xs text-white/40">
+        <div class="w-8 h-8 rounded-lg bg-green-500/15 flex items-center justify-center">
+          <span class="iconify text-green-400" data-icon="lucide:leaf" data-width="16"></span>
+        </div>
+        <span>Ambiente</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 4: VARIABLES ==================== -->
+<div class="slide" data-slide="3">
+  <div class="slide-content w-full h-full flex items-center justify-center px-8 md:px-16">
+    <div class="max-w-4xl w-full">
+      <div class="text-center mb-10">
+        <div class="anim-1 bullet-item mb-3">
+          <span class="tag bg-violet-500/15 text-violet-300 border border-violet-500/20">
+            <span class="iconify" data-icon="lucide:variable" data-width="11"></span>
+            Variables de Investigación
+          </span>
+        </div>
+        <h2 class="anim-2 bullet-item font-serif text-2xl md:text-4xl font-500 tracking-tight slide-title-size">Variables</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 slide-grid-2">
+        <!-- Variable Independiente -->
+        <div class="anim-3 bullet-item card-hover rounded-2xl bg-white/5 border border-white/10 p-6 md:p-8 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-amber/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+          <div class="relative z-10">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-amber/15 flex items-center justify-center">
+                <span class="iconify text-amber" data-icon="lucide:lightbulb" data-width="20"></span>
+              </div>
+              <span class="tag bg-amber/10 text-amber text-[10px] border border-amber/20">INDEPENDIENTE (X)</span>
+            </div>
+            <h3 class="font-serif text-lg md:text-xl font-500 mb-3">Conocimiento de los Atractivos Turísticos</h3>
+            <p class="text-xs text-white/50 leading-relaxed mb-4">Nivel de información que tienen los estudiantes sobre los atractivos turísticos de Santa Lucía: su historia, características, ubicación e importancia.</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="px-2.5 py-1 rounded-md bg-white/5 text-[10px] text-white/40">Identificación</span>
+              <span class="px-2.5 py-1 rounded-md bg-white/5 text-[10px] text-white/40">Historia</span>
+              <span class="px-2.5 py-1 rounded-md bg-white/5 text-[10px] text-white/40">Características</span>
+              <span class="px-2.5 py-1 rounded-md bg-white/5 text-[10px] text-white/40">Valoración</span>
+            </div>
+          </div>
+        </div>
+        <!-- Variable Dependiente -->
+        <div class="anim-4 bullet-item card-hover rounded-2xl bg-white/5 border border-white/10 p-6 md:p-8 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+          <div class="relative z-10">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-accent/15 flex items-center justify-center">
+                <span class="iconify text-accent-light" data-icon="lucide:hand-helping" data-width="20"></span>
+              </div>
+              <span class="tag bg-accent/10 text-accent-light text-[10px] border border-accent/20">DEPENDIENTE (Y)</span>
+            </div>
+            <h3 class="font-serif text-lg md:text-xl font-500 mb-3">Acciones de Conservación Ambiental</h3>
+            <p class="text-xs text-white/50 leading-relaxed mb-4">Comportamientos y actividades que realizan los estudiantes para cuidar y proteger los atractivos turísticos de su localidad.</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="px-2.5 py-1 rounded-md bg-white/5 text-[10px] text-white/40">Limpieza</span>
+              <span class="px-2.5 py-1 rounded-md bg-white/5 text-[10px] text-white/40">Cuidado</span>
+              <span class="px-2.5 py-1 rounded-md bg-white/5 text-[10px] text-white/40">Sensibilización</span>
+              <span class="px-2.5 py-1 rounded-md bg-white/5 text-[10px] text-white/40">Difusión</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Relación -->
+      <div class="anim-5 bullet-item mt-8 flex items-center justify-center gap-4 text-sm text-white/40">
+        <span class="text-amber font-medium text-xs">X → Conocimiento</span>
+        <div class="flex-1 max-w-[120px] h-px bg-gradient-to-r from-amber/40 to-accent/40 relative">
+          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-brand-dark border border-white/20 flex items-center justify-center">
+            <span class="iconify text-white/60" data-icon="lucide:arrow-right" data-width="10"></span>
+          </div>
+        </div>
+        <span class="text-accent-light font-medium text-xs">Y → Conservación</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 5: HIPÓTESIS ==================== -->
+<div class="slide" data-slide="4">
+  <div class="absolute inset-0">
+    <img src="img/hipotesis.jpg" class="w-full h-full object-cover" alt="">
+    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/80 to-brand-dark/50"></div>
+  </div>
+  <div class="slide-content relative z-10 max-w-3xl mx-auto px-8 text-center">
+    <div class="anim-1 bullet-item mb-6">
+      <span class="tag bg-emerald-500/15 text-emerald-300 border border-emerald-500/20">
+        <span class="iconify" data-icon="lucide:flask-conical" data-width="11"></span>
+        Hipótesis
+      </span>
+    </div>
+    <h2 class="anim-2 bullet-item font-serif text-2xl md:text-3xl font-500 tracking-tight mb-10 slide-title-size">Hipótesis de Investigación</h2>
+    
+    <div class="anim-3 bullet-item rounded-2xl bg-white/5 border border-white/10 p-6 md:p-8 backdrop-blur-sm mb-8 text-left">
+      <div class="flex gap-4">
+        <div class="divider-vertical bg-gradient-to-b from-amber to-accent-light flex-shrink-0"></div>
+        <p class="text-sm md:text-base text-white/80 leading-relaxed font-light slide-text-size">
+          <span class="text-amber font-medium">Si</span> los estudiantes conocen mejor los atractivos turísticos de Santa Lucía,
+          <span class="text-accent-light font-medium">entonces</span> participarán con mayor responsabilidad en acciones de
+          <strong class="text-white">limpieza, cuidado y conservación</strong> del ambiente de su localidad.
+        </p>
+      </div>
+    </div>
+
+    <div class="anim-4 bullet-item grid grid-cols-3 gap-4 max-w-lg mx-auto">
+      <div class="text-center p-3 rounded-xl bg-amber/10 border border-amber/15">
+        <span class="iconify text-amber mb-2 mx-auto block" data-icon="lucide:book-open-check" data-width="24"></span>
+        <p class="text-[10px] text-white/50">Conocen</p>
+      </div>
+      <div class="text-center p-3 rounded-xl bg-accent/10 border border-accent/15">
+        <span class="iconify text-accent-light mb-2 mx-auto block" data-icon="lucide:trending-up" data-width="24"></span>
+        <p class="text-[10px] text-white/50">Influye</p>
+      </div>
+      <div class="text-center p-3 rounded-xl bg-green-500/10 border border-green-500/15">
+        <span class="iconify text-green-400 mb-2 mx-auto block" data-icon="lucide:shield-check" data-width="24"></span>
+        <p class="text-[10px] text-white/50">Conservan</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 6: OBJETIVOS ==================== -->
+<div class="slide" data-slide="5">
+  <div class="slide-content w-full h-full flex items-center justify-center px-8 md:px-16 slide-scroll overflow-y-auto py-12">
+    <div class="max-w-4xl w-full">
+      <div class="text-center mb-8">
+        <div class="anim-1 bullet-item mb-3">
+          <span class="tag bg-cyan-500/15 text-cyan-300 border border-cyan-500/20">
+            <span class="iconify" data-icon="lucide:target" data-width="11"></span>
+            Objetivos
+          </span>
+        </div>
+        <h2 class="anim-2 bullet-item font-serif text-2xl md:text-4xl font-500 tracking-tight slide-title-size">Objetivos de la Investigación</h2>
+      </div>
+
+      <!-- Objetivo General -->
+      <div class="anim-3 bullet-item mb-6 rounded-2xl bg-gradient-to-r from-brand-light/30 to-brand/20 border border-accent/20 p-5 md:p-6">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <span class="iconify text-accent-light" data-icon="lucide:bullseye" data-width="16"></span>
+          </div>
+          <div>
+            <span class="text-[10px] font-semibold text-accent-light tracking-widest uppercase mb-1 block">General</span>
+            <p class="text-sm md:text-base text-white/90 font-light leading-relaxed slide-text-size">
+              Valorar los atractivos turísticos de Santa Lucía para promover acciones responsables de conservación ambiental.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Objetivos Específicos -->
+      <div class="space-y-3">
+        <div class="anim-3 bullet-item flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+          <span class="w-6 h-6 rounded-full bg-amber/15 flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-amber mt-0.5">1</span>
+          <p class="text-xs md:text-sm text-white/70 font-light leading-relaxed slide-text-size">Identificar los principales atractivos turísticos del distrito.</p>
+        </div>
+        <div class="anim-4 bullet-item flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+          <span class="w-6 h-6 rounded-full bg-amber/15 flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-amber mt-0.5">2</span>
+          <p class="text-xs md:text-sm text-white/70 font-light leading-relaxed slide-text-size">Reconocer problemas ambientales presentes en dichos espacios.</p>
+        </div>
+        <div class="anim-4 bullet-item flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+          <span class="w-6 h-6 rounded-full bg-amber/15 flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-amber mt-0.5">3</span>
+          <p class="text-xs md:text-sm text-white/70 font-light leading-relaxed slide-text-size">Analizar la relación entre conocimiento y conservación ambiental.</p>
+        </div>
+        <div class="anim-5 bullet-item flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+          <span class="w-6 h-6 rounded-full bg-amber/15 flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-amber mt-0.5">4</span>
+          <p class="text-xs md:text-sm text-white/70 font-light leading-relaxed slide-text-size">Proponer acciones de mejora para el cuidado de los atractivos turísticos.</p>
+        </div>
+        <div class="anim-6 bullet-item flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+          <span class="w-6 h-6 rounded-full bg-amber/15 flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-amber mt-0.5">5</span>
+          <p class="text-xs md:text-sm text-white/70 font-light leading-relaxed slide-text-size">Comunicar los resultados utilizando recursos tecnológicos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 7: RESPUESTA PRELIMINAR ==================== -->
+<div class="slide" data-slide="6">
+  <div class="slide-content w-full h-full flex items-center justify-center px-8 md:px-16">
+    <div class="max-w-3xl w-full text-center">
+      <div class="anim-1 bullet-item mb-6">
+        <span class="tag bg-pink-500/15 text-pink-300 border border-pink-500/20">
+          <span class="iconify" data-icon="lucide:message-circle" data-width="11"></span>
+          Respuesta Preliminar
+        </span>
+      </div>
+      <h2 class="anim-2 bullet-item font-serif text-2xl md:text-3xl font-500 tracking-tight mb-10 slide-title-size">Respuesta Preliminar</h2>
+      
+      <div class="anim-3 bullet-item relative">
+        <div class="rounded-2xl bg-white/[0.03] border border-white/10 p-8 md:p-10 backdrop-blur-sm">
+          <span class="iconify text-accent/20 mb-4 block mx-auto" data-icon="lucide:quote" data-width="40"></span>
+          <p class="text-sm md:text-lg text-white/80 font-light leading-relaxed slide-text-size" style="line-height:1.8;">
+            Creemos que al <strong class="text-amber font-medium">conocer los atractivos turísticos</strong> de Santa Lucía, los estudiantes comprenderán su importancia para la comunidad y <strong class="text-accent-light font-medium">participarán activamente</strong> en acciones de conservación ambiental, como:
+          </p>
+          <div class="anim-4 bullet-item flex flex-wrap justify-center gap-3 mt-6">
+            <span class="flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/15 text-xs text-green-300">
+              <span class="iconify" data-icon="lucide:sparkles" data-width="13"></span> Mantener limpios los espacios
+            </span>
+            <span class="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/15 text-xs text-emerald-300">
+              <span class="iconify" data-icon="lucide:tree-pine" data-width="13"></span> Cuidar las áreas verdes
+            </span>
+            <span class="flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/15 text-xs text-teal-300">
+              <span class="iconify" data-icon="lucide:megaphone" data-width="13"></span> Promover su protección
+            </span>
+          </div>
+        </div>
+        <div class="anim-5 bullet-item mt-6 flex items-center justify-center gap-2 text-xs text-white/30">
+          <span class="iconify" data-icon="lucide:info" data-width="13"></span>
+          Esta respuesta fue verificada mediante el proceso de indagación
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 8: PROCESO DE INDAGACIÓN ==================== -->
+<div class="slide" data-slide="7">
+  <div class="slide-content w-full h-full flex items-center justify-center px-8 md:px-16 slide-scroll overflow-y-auto py-12">
+    <div class="max-w-4xl w-full">
+      <div class="text-center mb-8">
+        <div class="anim-1 bullet-item mb-3">
+          <span class="tag bg-orange-500/15 text-orange-300 border border-orange-500/20">
+            <span class="iconify" data-icon="lucide:list-ordered" data-width="11"></span>
+            Metodología
+          </span>
+        </div>
+        <h2 class="anim-2 bullet-item font-serif text-2xl md:text-4xl font-500 tracking-tight slide-title-size">Proceso de Indagación</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 slide-grid-3">
+        <div class="anim-2 bullet-item p-4 rounded-xl bg-white/5 border border-white/5 card-hover">
+          <div class="w-8 h-8 rounded-lg bg-amber/15 flex items-center justify-center mb-3 text-sm font-bold text-amber">01</div>
+          <p class="text-xs text-white/70 font-light">Conversatorio sobre los atractivos turísticos</p>
+		      <img src="img/conversa.jpg" alt="Descripción de la imagen" width="150" height="150">
+        </div>
+        <div class="anim-2 bullet-item p-4 rounded-xl bg-white/5 border border-white/5 card-hover">
+          <div class="w-8 h-8 rounded-lg bg-amber/15 flex items-center justify-center mb-3 text-sm font-bold text-amber">02</div>
+          <p class="text-xs text-white/70 font-light">Formulación de preguntas de investigación</p>
+		      <img src="img/preguntas.jpg" alt="Descripción de la imagen" width="150" height="150">
+        </div>
+        <div class="anim-3 bullet-item p-4 rounded-xl bg-white/5 border border-white/5 card-hover">
+          <div class="w-8 h-8 rounded-lg bg-amber/15 flex items-center justify-center mb-3 text-sm font-bold text-amber">03</div>
+          <p class="text-xs text-white/70 font-light">Visitas y observación directa de campo</p>
+		      <img src="img/campo.jpg" alt="Descripción de la imagen" width="150" height="150">
+        </div>
+        <div class="anim-3 bullet-item p-4 rounded-xl bg-white/5 border border-white/5 card-hover">
+          <div class="w-8 h-8 rounded-lg bg-accent/15 flex items-center justify-center mb-3 text-sm font-bold text-accent-light">04</div>
+          <p class="text-xs text-white/70 font-light">Registro fotográfico de los atractivos</p>
+		      <img src="img/isla3.jpg" alt="Descripción de la imagen" width="150" height="150">
+        </div>
+        <div class="anim-4 bullet-item p-4 rounded-xl bg-white/5 border border-white/5 card-hover">
+          <div class="w-8 h-8 rounded-lg bg-accent/15 flex items-center justify-center mb-3 text-sm font-bold text-accent-light">05</div>
+          <p class="text-xs text-white/70 font-light">Entrevistas a pobladores y autoridades</p>
+          <img src="img/entrevista.jpg" alt="Descripción de la imagen" width="150" height="150">
+        </div>
+        <div class="anim-4 bullet-item p-4 rounded-xl bg-white/5 border border-white/5 card-hover">
+          <div class="w-8 h-8 rounded-lg bg-accent/15 flex items-center justify-center mb-3 text-sm font-bold text-accent-light">06</div>
+          <p class="text-xs text-white/70 font-light">Elaboración del cuaderno de campo</p>
+          <img src="img/cuaderno.jpg" alt="cuaderno de campo" style="width: 100px; height: 100px; object-fit: cover;">
+        </div>
+        <div class="anim-5 bullet-item p-4 rounded-xl bg-white/5 border border-white/5 card-hover">
+          <div class="w-8 h-8 rounded-lg bg-green-500/15 flex items-center justify-center mb-3 text-sm font-bold text-green-400">07</div>
+          <p class="text-xs text-white/70 font-light">Organización de información en cuadros</p>
+          <img src="img/organiza.png" alt="cuaderno de campo" style="width: 100px; height: 100px; object-fit: cover;">
+        </div>
+        <div class="anim-5 bullet-item p-4 rounded-xl bg-white/5 border border-white/5 card-hover">
+          <div class="w-8 h-8 rounded-lg bg-green-500/15 flex items-center justify-center mb-3 text-sm font-bold text-green-400">08</div>
+          <p class="text-xs text-white/70 font-light">Elaboración de afiches digitales</p>
+          <img src="img/afiche.png" alt="cuaderno de campo" style="width: 100px; height: 100px; object-fit: cover;">
+        </div>
+        <div class="anim-6 bullet-item p-4 rounded-xl bg-white/5 border border-white/5 card-hover">
+          <div class="w-8 h-8 rounded-lg bg-green-500/15 flex items-center justify-center mb-3 text-sm font-bold text-green-400">09</div>
+          <p class="text-xs text-white/70 font-light">Exposición y comunicación de resultados</p>
+          <img src="img/expone.png" alt="cuaderno de campo" style="width: 100px; height: 100px; object-fit: cover;">
+        </div>
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 9: RESULTADOS (Parte 1) ==================== -->
+<div class="slide" data-slide="8">
+  <div class="slide-content w-full h-full flex items-center justify-center px-6 md:px-12 slide-scroll overflow-y-auto py-10">
+    <div class="max-w-5xl w-full">
+      <div class="text-center mb-6">
+        <div class="anim-1 bullet-item mb-3">
+          <span class="tag bg-teal-500/15 text-teal-300 border border-teal-500/20">
+            <span class="iconify" data-icon="lucide:bar-chart-3" data-width="11"></span>
+            Hallazgos
+          </span>
+        </div>
+        <h2 class="anim-2 bullet-item font-serif text-2xl md:text-3xl font-500 tracking-tight slide-title-size">Resultados – Parte 1</h2>
+        <p class="anim-2 bullet-item text-xs text-white/40 mt-2">Se identificaron 09 atractivos turísticos en Santa Lucía</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 slide-grid-3">
+        <!-- Puente Huallaga -->
+        <div class="anim-3 bullet-item rounded-xl bg-white/5 border border-white/5 overflow-hidden card-hover">
+          <div class="h-28 relative">
+            <img src="img/puente.jpg" class="w-full h-full object-cover" alt="">
+            <div class="absolute inset-0 bg-gradient-to-t from-brand-dark to-transparent"></div>
+            <span class="absolute bottom-2 left-2 tag bg-green-500/20 text-green-300 text-[8px] border border-green-500/20">Buen estado</span>
+          </div>
+          <div class="p-3">
+            <h4 class="text-xs font-medium mb-1">Puente Huallaga</h4>
+            <p class="text-[10px] text-white/40 leading-relaxed">407 m tipo atirantado. Alto potencial turístico como mirador natural.</p>
+          </div>
+        </div>
+        <!-- Quebrada -->
+        <div class="anim-3 bullet-item rounded-xl bg-white/5 border border-white/5 overflow-hidden card-hover">
+          <div class="h-28 relative">
+            <img src="https://z-cdn-media.chatglm.cn/files/a48f1e8d-3f10-4950-b590-b6e85aa8a6a3.jpg?auth_key=1882484908-91d2e7c1335047958ebfac95dde34bc5-0-ebf6c64d1bd1f17ba67e0ab37b4e1cf7" class="w-full h-full object-cover" alt="">
+            <div class="absolute inset-0 bg-gradient-to-t from-brand-dark to-transparent"></div>
+            <span class="absolute bottom-2 left-2 tag bg-amber-500/20 text-amber-300 text-[8px] border border-amber-500/20">Regular – Residuos</span>
+          </div>
+          <div class="p-3">
+            <h4 class="text-xs font-medium mb-1">Quebrada Santa Lucía</h4>
+            <p class="text-[10px] text-white/40 leading-relaxed">Aguas cristalinas con vegetación. Presencia de residuos sólidos.</p>
+          </div>
+        </div>
+        <!-- Plaza de Armas -->
+        <div class="anim-4 bullet-item rounded-xl bg-white/5 border border-white/5 overflow-hidden card-hover">
+          <div class="h-28 relative bg-gradient-to-br from-accent/10 to-brand/20 flex items-center justify-center">
+            <img src="img/plaza2.jpg" class="w-full h-full object-cover" alt="">
+            <span class="absolute bottom-2 left-2 tag bg-yellow-500/20 text-yellow-300 text-[8px] border border-yellow-500/20">Bueno a Regular</span>
+          </div>
+          <div class="p-3">
+            <h4 class="text-xs font-medium mb-1">Plaza de Armas</h4>
+            <p class="text-[10px] text-white/40 leading-relaxed">Principal espacio de reunión. Potencial medio-alto. Necesita riego e iluminación.</p>
+          </div>
+        </div>
+        <!-- Parque Virgen -->
+        <div class="anim-4 bullet-item rounded-xl bg-white/5 border border-white/5 overflow-hidden card-hover">
+          <div class="h-28 relative bg-gradient-to-br from-purple-500/10 to-brand/20 flex items-center justify-center">
+            <img src="img/pvirgen2.jpg" class="w-full h-full object-cover" alt="">
+            <span class="absolute bottom-2 left-2 tag bg-green-500/20 text-green-300 text-[8px] border border-green-500/20">Buen estado</span>
+          </div>
+          <div class="p-3">
+            <h4 class="text-xs font-medium mb-1">Parque Virgen Santa Lucía</h4>
+            <p class="text-[10px] text-white/40 leading-relaxed">Espacio religioso con jardines. Potencial medio para turismo religioso.</p>
+          </div>
+        </div>
+        <!-- Iglesia -->
+        <div class="anim-5 bullet-item rounded-xl bg-white/5 border border-white/5 overflow-hidden card-hover">
+          <div class="h-28 relative bg-gradient-to-br from-amber/10 to-brand/20 flex items-center justify-center">
+            <img src="img/iglesia.jpg" class="w-full h-full object-cover" alt="">
+            <span class="absolute bottom-2 left-2 tag bg-amber-500/20 text-amber-300 text-[8px] border border-amber-500/20">Regular</span>
+          </div>
+          <div class="p-3">
+            <h4 class="text-xs font-medium mb-1">Iglesia Católica</h4>
+            <p class="text-[10px] text-white/40 leading-relaxed">Valor histórico y religioso. Requiere restauración de pintura e impermeabilización.</p>
+          </div>
+        </div>
+        <!-- Isla Santa Lucía -->
+        <div class="anim-5 bullet-item rounded-xl bg-white/5 border border-white/5 overflow-hidden card-hover">
+          <div class="h-28 relative bg-gradient-to-br from-cyan-500/10 to-brand/20 flex items-center justify-center">
+            <img src="img/isla3.jpg" class="w-full h-full object-cover" alt="">
+            <span class="absolute bottom-2 left-2 tag bg-red-500/20 text-red-300 text-[8px] border border-red-500/20">Vulnerable</span>
+          </div>
+          <div class="p-3">
+            <h4 class="text-xs font-medium mb-1">Isla Santa Lucía</h4>
+            <p class="text-[10px] text-white/40 leading-relaxed">Isla fluvial estacional (jun-oct). Potencial muy alto. Acumulación de residuos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 10: RESULTADOS (Parte 2) ==================== -->
+<div class="slide" data-slide="9">
+  <div class="slide-content w-full h-full flex items-center justify-center px-6 md:px-12 slide-scroll overflow-y-auto py-10">
+    <div class="max-w-5xl w-full">
+      <div class="text-center mb-6">
+        <div class="anim-1 bullet-item mb-3">
+          <span class="tag bg-teal-500/15 text-teal-300 border border-teal-500/20">
+            <span class="iconify" data-icon="lucide:bar-chart-3" data-width="11"></span>
+            Hallazgos
+          </span>
+        </div>
+        <h2 class="anim-2 bullet-item font-serif text-2xl md:text-3xl font-500 tracking-tight slide-title-size">Resultados – Parte 2</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 slide-grid-2">
+        <!-- Piscina Municipal -->
+        <div class="anim-5 bullet-item rounded-xl bg-white/5 border border-white/5 overflow-hidden card-hover">
+          <div class="p-3">
+            <h4 class="text-xs font-medium mb-1">Piscina Municipal</h4>
+            <p class="text-[10px] text-white/40 leading-relaxed">Infraestructura recreativa para niños y adultos. Estado regular.</p>
+            <img src="img/piscina.jpg" style="width: 200px; height: 200px; object-fit: cover;">
+            <div class="flex gap-2 flex-wrap">
+              <span class="px-2 py-0.5 rounded bg-amber/10 text-[9px] text-amber/70">Mejorar filtración</span>
+              <span class="px-2 py-0.5 rounded bg-amber/10 text-[9px] text-amber/70">Áreas sombreadas</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Parque El Robot -->
+        <div class="anim-3 bullet-item rounded-xl bg-white/5 border border-white/5 p-5 card-hover flex gap-4">
+          <div>
+            <h4 class="text-sm font-medium mb-1">Parque "El Trabajo" (El Robot)</h4>
+            <p class="text-[10px] text-white/40 leading-relaxed mb-2">Escultura de piezas recicladas de maquinaria industrial. Representa la identidad trabajadora.</p>
+            <img src="img/ptrabajo.jpg" style="width: 200px; height: 200px; object-fit: cover;">
+            <div class="flex gap-2 flex-wrap">
+              <span class="px-2 py-0.5 rounded bg-green-500/10 text-[9px] text-green-400/70">Reciclaje</span>
+              <span class="px-2 py-0.5 rounded bg-amber/10 text-[9px] text-amber/70">Mantenimiento</span>
+            </div>
+          </div>
+        </div>
+        <!-- Laguna Villa Hermosa -->
+        <div class="anim-4 bullet-item rounded-xl bg-white/5 border border-white/5 p-5 card-hover flex gap-4 sm:col-span-2">
+          <div class="flex-1">
+            <h4 class="text-sm font-medium mb-1">Laguna Villa Hermosa</h4>
+            <p class="text-[10px] text-white/40 leading-relaxed mb-2">Hermoso recurso natural con aguas tranquilas, rodeado de vegetación. Gran diversidad de flora y fauna. Potencial turístico muy alto para observación de naturaleza y caminatas.</p>
+            <img src="img/laguna1.jpg" style="width: 200px; height: 200px; object-fit: cover;">
+            <div class="flex gap-2 flex-wrap">
+              <span class="px-2 py-0.5 rounded bg-green-500/10 text-[9px] text-green-400/70">Campañas de limpieza</span>
+              <span class="px-2 py-0.5 rounded bg-green-500/10 text-[9px] text-green-400/70">Senderos ecológicos</span>
+              <span class="px-2 py-0.5 rounded bg-green-500/10 text-[9px] text-green-400/70">Paneles informativos</span>
+              <span class="px-2 py-0.5 rounded bg-green-500/10 text-[9px] text-green-400/70">Educación ambiental</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones ejecutadas -->
+      <div class="anim-5 bullet-item mt-6 rounded-xl bg-accent/10 border border-accent/15 p-5">
+        <h4 class="text-xs font-semibold text-accent-light mb-3 flex items-center gap-2">
+          <span class="iconify" data-icon="lucide:check-circle-2" data-width="14"></span>
+          Acciones Generadas
+        </h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="text-center">
+            <span class="iconify text-green-400 mx-auto mb-1 block" data-icon="lucide:trash-2" data-width="20"></span>
+            <p class="text-[10px] text-white/50">Campañas de limpieza</p>
+          </div>
+          <div class="text-center">
+            <span class="iconify text-blue-400 mx-auto mb-1 block" data-icon="lucide:printer" data-width="20"></span>
+            <p class="text-[10px] text-white/50">Afiches informativos</p>
+          </div>
+          <div class="text-center">
+            <span class="iconify text-amber mx-auto mb-1 block" data-icon="lucide:presentation" data-width="20"></span>
+            <p class="text-[10px] text-white/50">Charlas de sensibilización</p>
+          </div>
+          <div class="text-center">
+            <span class="iconify text-purple-400 mx-auto mb-1 block" data-icon="lucide:qr-code" data-width="20"></span>
+            <p class="text-[10px] text-white/50">Código QR turístico</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 11: ANÁLISIS ==================== -->
+<div class="slide" data-slide="10">
+  <div class="absolute inset-0">
+    <img src="https://z-cdn-media.chatglm.cn/files/5e3524d4-0a73-4904-9d5c-622a307dc4c1.jpg?auth_key=1882484908-0262af8c2d3b4bc39fdb4f4f95f9401a-0-6220c4f3f7edd5b63817365fa8d91017" class="w-full h-full object-cover" alt="">
+    <div class="absolute inset-0 bg-brand-dark/90"></div>
+  </div>
+  <div class="slide-content relative z-10 w-full h-full flex items-center justify-center px-8 md:px-16 slide-scroll overflow-y-auto py-10">
+    <div class="max-w-4xl w-full">
+      <div class="text-center mb-8">
+        <div class="anim-1 bullet-item mb-3">
+          <span class="tag bg-indigo-500/15 text-indigo-300 border border-indigo-500/20">
+            <span class="iconify" data-icon="lucide:search" data-width="11"></span>
+            Interpretación
+          </span>
+        </div>
+        <h2 class="anim-2 bullet-item font-serif text-2xl md:text-4xl font-500 tracking-tight slide-title-size">Análisis de Resultados</h2>
+      </div>
+
+      <div class="space-y-4">
+        <div class="anim-3 bullet-item flex gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
+          <div class="divider-vertical bg-gradient-to-b from-amber to-amber/0 flex-shrink-0"></div>
+          <div>
+            <h4 class="text-xs font-semibold text-amber mb-1">Relación directa confirmada</h4>
+            <p class="text-[11px] text-white/60 leading-relaxed">Se comprobó que existe una <strong class="text-white/80">relación directa</strong> entre el conocimiento de los atractivos turísticos y las acciones de conservación ambiental.</p>
+          </div>
+        </div>
+
+        <div class="anim-4 bullet-item flex gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
+          <div class="divider-vertical bg-gradient-to-b from-accent-light to-accent-light/0 flex-shrink-0"></div>
+          <div>
+            <h4 class="text-xs font-semibold text-accent-light mb-1">Sentido de pertenencia</h4>
+            <p class="text-[11px] text-white/60 leading-relaxed">Al conocer la historia y función de cada atractivo, los estudiantes <strong class="text-white/80">fortalecieron su identidad local</strong> y desarrollaron actitudes de respeto por el patrimonio.</p>
+          </div>
+        </div>
+
+        <div class="anim-4 bullet-item flex gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
+          <div class="divider-vertical bg-gradient-to-b from-red-400 to-red-400/0 flex-shrink-0"></div>
+          <div>
+            <h4 class="text-xs font-semibold text-red-300 mb-1">Problemas ambientales reales</h4>
+            <p class="text-[11px] text-white/60 leading-relaxed">La presencia de residuos en la quebrada y la isla generó <strong class="text-white/80">reflexión y acción</strong>: los estudiantes propusieron campañas de limpieza y sensibilización.</p>
+          </div>
+        </div>
+
+        <div class="anim-5 bullet-item flex gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
+          <div class="divider-vertical bg-gradient-to-b from-green-400 to-green-400/0 flex-shrink-0"></div>
+          <div>
+            <h4 class="text-xs font-semibold text-green-300 mb-1">Valor del reciclaje</h4>
+            <p class="text-[11px] text-white/60 leading-relaxed">El Parque El Robot demostró que la <strong class="text-white/80">reutilización de materiales</strong> es una acción concreta de protección ambiental.</p>
+          </div>
+        </div>
+
+        <div class="anim-6 bullet-item flex gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
+          <div class="divider-vertical bg-gradient-to-b from-purple-400 to-purple-400/0 flex-shrink-0"></div>
+          <div>
+            <h4 class="text-xs font-semibold text-purple-300 mb-1">Patrimonio cultural = ambiente social</h4>
+            <p class="text-[11px] text-white/60 leading-relaxed">Conservar la iglesia y los espacios religiosos también es <strong class="text-white/80">proteger el ambiente social y cultural</strong> de la localidad.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="anim-6 bullet-item mt-6 p-4 rounded-xl bg-green-500/10 border border-green-500/15 text-center">
+        <p class="text-xs text-green-300/80 font-medium">
+          <span class="iconify inline-block mr-1 align-text-bottom" data-icon="lucide:check-circle" data-width="14"></span>
+          La información obtenida permitió <strong>validar la hipótesis planteada</strong>.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 12: CONCLUSIONES ==================== -->
+<div class="slide" data-slide="11">
+  <div class="absolute inset-0">
+    <img src="https://z-cdn-media.chatglm.cn/files/434875dc-412d-4829-9f3d-e47f33155f55.jpg?auth_key=1882484908-8d4031b1f4974fbb87c6470962cc8d3e-0-92675748e0b3cd9b4fec4cb4811595a4" class="w-full h-full object-cover" alt="">
+    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/85 to-brand-dark/60"></div>
+  </div>
+  <div class="slide-content relative z-10 w-full h-full flex items-center justify-center px-8 md:px-14 slide-scroll overflow-y-auto py-10">
+    <div class="max-w-4xl w-full">
+      <div class="text-center mb-8">
+        <div class="anim-1 bullet-item mb-3">
+          <span class="tag bg-amber/15 text-amber border border-amber/20">
+            <span class="iconify" data-icon="lucide:award" data-width="11"></span>
+            Cierre
+          </span>
+        </div>
+        <h2 class="anim-2 bullet-item font-serif text-2xl md:text-4xl font-500 tracking-tight slide-title-size">Conclusiones</h2>
+      </div>
+
+      <div class="space-y-3">
+        <div class="anim-3 bullet-item flex gap-3 p-4 rounded-xl bg-white/[0.06] border border-white/10 backdrop-blur-sm">
+          <span class="w-7 h-7 rounded-full bg-amber/20 flex items-center justify-center flex-shrink-0 text-xs font-bold text-amber">1</span>
+          <p class="text-xs text-white/75 leading-relaxed slide-text-size">Conocimos y reconocimos <strong class="text-white">09 atractivos turísticos</strong> de Santa Lucía, que forman parte de nuestra historia, cultura e identidad.</p>
+        </div>
+
+        <div class="anim-3 bullet-item flex gap-3 p-4 rounded-xl bg-white/[0.06] border border-white/10 backdrop-blur-sm">
+          <span class="w-7 h-7 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 text-xs font-bold text-accent-light">2</span>
+          <p class="text-xs text-white/75 leading-relaxed slide-text-size">Comprobamos que al conocer mejor nuestros atractivos, <strong class="text-white">aprendemos a cuidarlos</strong>, participando en limpieza, cuidado de áreas verdes y difusión ambiental.</p>
+        </div>
+
+        <div class="anim-4 bullet-item flex gap-3 p-4 rounded-xl bg-white/[0.06] border border-white/10 backdrop-blur-sm">
+          <span class="w-7 h-7 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 text-xs font-bold text-red-300">3</span>
+          <p class="text-xs text-white/75 leading-relaxed slide-text-size">Identificamos problemas como la <strong class="text-white">presencia de basura y deterioro</strong> de espacios, y comprendimos que es responsabilidad de todos conservarlos.</p>
+        </div>
+
+        <div class="anim-5 bullet-item flex gap-3 p-4 rounded-xl bg-white/[0.06] border border-white/10 backdrop-blur-sm">
+          <span class="w-7 h-7 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 text-xs font-bold text-green-300">4</span>
+          <p class="text-xs text-white/75 leading-relaxed slide-text-size">El trabajo en equipo con compañeros, docentes y familias <strong class="text-white">fortaleció nuestra identidad local</strong> y el amor por nuestra comunidad.</p>
+        </div>
+
+        <div class="anim-6 bullet-item flex gap-3 p-4 rounded-xl bg-white/[0.06] border border-white/10 backdrop-blur-sm">
+          <span class="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0 text-xs font-bold text-purple-300">5</span>
+          <p class="text-xs text-white/75 leading-relaxed slide-text-size">La investigación demostró que <strong class="text-white">los niños también podemos ser agentes de cambio</strong>, proponiendo acciones para cuidar el ambiente para las futuras generaciones.</p>
+        </div>
+      </div>
+
+      <!-- Acciones ejecutadas -->
+      <div class="anim-5 bullet-item mt-6 rounded-xl bg-accent/10 border border-accent/15 p-5">
+        <h4 class="text-xs font-semibold text-accent-light mb-3 flex items-center gap-2">
+          <span class="iconify" data-icon="lucide:check-circle-2" data-width="14"></span>
+          Producto Final
+        </h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="text-center">
+            <span class="iconify text-purple-400 mx-auto mb-1 block" data-icon="lucide:qr-code" data-width="20"></span>
+            <p class="text-[10px] text-white/50">Código QR turístico</p>
+            <img src="img/qr.png" style="width: 150px; height: 150px; object-fit: cover;">
+          </div>
+        </div>
+      </div>
+
+      <div class="anim-6 bullet-item mt-8 text-center">
+        <div class="flex items-center justify-center gap-1 text-white/15">
+          <span class="iconify" data-icon="lucide:heart" data-width="12"></span>
+          <span class="text-[10px]">Por un Santa Lucía más limpio y verde</span>
+          <span class="iconify" data-icon="lucide:leaf" data-width="12"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const TOTAL_SLIDES = 12;
+  let current = 0;
+  let isAnimating = false;
+
+  // Create thumbnails
+  const thumbContainer = document.querySelector('.fixed.bottom-4');
+  const template = document.getElementById('thumbTemplate');
+  for (let i = 0; i < TOTAL_SLIDES; i++) {
+    const clone = template.content.cloneNode(true);
+    const btn = clone.querySelector('.thumb-btn');
+    btn.setAttribute('onclick', `goToSlide(${i})`);
+    btn.dataset.index = i;
+    thumbContainer.appendChild(clone);
+  }
+
+  function updateUI() {
+    // Progress bar
+    document.getElementById('progressBar').style.width = `${((current + 1) / TOTAL_SLIDES) * 100}%`;
+    // Slide counter
+    document.getElementById('currentSlide').textContent = String(current + 1).padStart(2, '0');
+    // Thumbnails
+    document.querySelectorAll('.thumb-btn').forEach((btn, i) => {
+      if (i === current) {
+        btn.className = 'thumb-btn w-6 h-2 rounded-full bg-amber/80 transition-all duration-300';
+      } else {
+        btn.className = 'thumb-btn w-2 h-2 rounded-full bg-white/20 transition-all duration-300 hover:bg-white/50';
+      }
+    });
+    // Nav buttons
+    document.getElementById('prevBtn').style.opacity = current === 0 ? '0.3' : '1';
+    document.getElementById('prevBtn').style.pointerEvents = current === 0 ? 'none' : 'auto';
+    document.getElementById('nextBtn').style.opacity = current === TOTAL_SLIDES - 1 ? '0.3' : '1';
+    document.getElementById('nextBtn').style.pointerEvents = current === TOTAL_SLIDES - 1 ? 'none' : 'auto';
+  }
+
+  function goToSlide(index, direction) {
+    if (isAnimating || index === current || index < 0 || index >= TOTAL_SLIDES) return;
+    isAnimating = true;
+
+    const slides = document.querySelectorAll('.slide');
+    const oldSlide = slides[current];
+    const newSlide = slides[index];
+
+    const dir = direction || (index > current ? 'right' : 'left');
+
+    // Reset animations on new slide
+    newSlide.querySelectorAll('.bullet-item').forEach(el => {
+      el.style.animation = 'none';
+      el.offsetHeight; // force reflow
+      el.style.animation = '';
+    });
+
+    // Transition
+    oldSlide.classList.remove('active');
+    oldSlide.classList.add(dir === 'right' ? 'exit-left' : 'exit-right');
+    
+    newSlide.classList.add('active');
+
+    setTimeout(() => {
+      oldSlide.classList.remove('exit-left', 'exit-right');
+    }, 700);
+
+    current = index;
+    updateUI();
+
+    setTimeout(() => { isAnimating = false; }, 800);
+  }
+
+  function changeSlide(dir) {
+    goToSlide(current + dir, dir > 0 ? 'right' : 'left');
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      changeSlide(1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+      e.preventDefault();
+      changeSlide(-1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      goToSlide(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      goToSlide(TOTAL_SLIDES - 1);
+    }
+  });
+
+  // Touch/swipe support
+  let touchStartX = 0;
+  let touchStartY = 0;
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].screenX - touchStartX;
+    const dy = e.changedTouches[0].screenY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      changeSlide(dx < 0 ? 1 : -1);
+    }
+  }, { passive: true });
+
+  // Initialize
+  updateUI();
+</script>
+
+</body>
+</html>
