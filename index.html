@@ -899,9 +899,16 @@ tailwind.config = {
         </h4>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div class="text-center">
-            <span class="iconify text-purple-400 mx-auto mb-1 block" data-icon="lucide:qr-code" data-width="20"></span>
             <p class="text-[10px] text-white/50">Código QR turístico</p>
-            <img src="img/qr.png" style="width: 150px; height: 150px; object-fit: cover;">
+            <div id="qr"></div>
+              <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+              <script>
+                  new QRCode(document.getElementById("qr"), {
+                  text: "https://tosaes.github.io/santaluciaperu/",
+                  width: 200,
+                  height: 200,
+                });
+    </script>
           </div>
         </div>
       </div>
